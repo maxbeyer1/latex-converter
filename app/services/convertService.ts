@@ -34,23 +34,22 @@ Here is a sample equation:
 \\end{document}`;
 
 // Mock implementation (to be replaced with actual API call)
-export const convertPdfToLatex = async (file: File): Promise<string> => {
-  return new Promise((resolve) => {
-    // Simulate API call with a timeout
-    setTimeout(() => {
-      resolve(mockLatexContent);
-    }, 1500);
-  });
-};
+// export const convertPdfToLatex = async (file: File): Promise<string> => {
+//   return new Promise((resolve) => {
+//     // Simulate API call with a timeout
+//     setTimeout(() => {
+//       resolve(mockLatexContent);
+//     }, 1500);
+//   });
+// };
 
 // Real implementation (uncomment and use when backend is ready)
-/*
 export const convertPdfToLatex = async (file: File): Promise<string> => {
-  try {
+  try {    
     const formData = new FormData();
     formData.append("file", file);
     
-    const response = await fetch("/api/py/convert", {
+    const response = await fetch("http://localhost:8000/upload", {
       method: "POST",
       body: formData,
     });
@@ -66,4 +65,3 @@ export const convertPdfToLatex = async (file: File): Promise<string> => {
     throw error;
   }
 };
-*/
