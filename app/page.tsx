@@ -6,6 +6,7 @@ import FileUpload from "./components/FileUpload";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { convertPdfToLatex } from "./services/convertService";
 import { useAppStore } from "./services/appState";
+import Link from "next/link";
 
 export default function Home() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function Home() {
   
   // Get the store setter
   const setLatexContent = useAppStore((state) => state.setLatexContent);
+  const latexContent = useAppStore((state) => state.latexContent);
 
   const handleFileSelect = (file: File) => {
     setPdfFile(file);
@@ -45,44 +47,55 @@ export default function Home() {
     }
   };
 
+  // Show a full-screen loading spinner during the conversion process
+  if (isLoading) {
+    return <LoadingSpinner size="lg" text="Converting your PDF to LaTeX..." fullScreen={true} />;
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-start p-6 bg-gray-50 pt-0">
-      <div className="w-full max-w-4xl mt-6">
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">PDF to LaTeX Converter</h1>
-        
-        <div className="grid grid-cols-1 gap-6">
-          {/* Input Section */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4 text-center text-gray-700">Upload PDF</h2>
-            
-            <FileUpload 
-              onFileSelect={handleFileSelect}
-              selectedFile={pdfFile}
-              isLoading={isLoading}
-            />
-            
-            {error && (
-              <p className="mt-2 text-red-500 text-sm text-center">{error}</p>
-            )}
-            
-            {pdfFile && (
-              <div className="flex justify-center w-full">
-                <button
-                  onClick={handleConvert}
-                  disabled={isLoading}
-                  className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors disabled:bg-blue-300"
-                >
-                  {isLoading ? (
-                    <span className="flex items-center">
-                      <LoadingSpinner size="sm" />
-                      <span className="ml-2">Converting...</span>
-                    </span>
-                  ) : "Convert to LaTeX"}
-                </button>
-              </div>
-            )}
-          </div>
+    <main className="min-h-screen flex flex-col items-center justify-start px-4 py-12">
+      <div className="container-center">
+        <div className="text-center mb-12 animate-fade-in">
+          <h1 className="text-4xl font-bold mb-3">PDF to LaTeX</h1>
+          <p className="text-gray-600 max-w-md mx-auto">
+            Convert your PDF documents to LaTeX format with precision
+          </p>
         </div>
+        
+        <div className="card p-8 animate-slide-up stagger-1">
+          <FileUpload 
+            onFileSelect={handleFileSelect}
+            selectedFile={pdfFile}
+            isLoading={isLoading}
+          />
+          
+          {error && (
+            <p className="mt-4 text-red-500 text-sm text-center">{error}</p>
+          )}
+          
+          {pdfFile && (
+            <div className="flex justify-center w-full mt-6 animate-slide-up stagger-2">
+              <button
+                onClick={handleConvert}
+                disabled={isLoading}
+                className="btn-primary"
+              >
+                Convert to LaTeX
+              </button>
+            </div>
+          )}
+        </div>
+
+        {latexContent && (
+          <div className="mt-6 text-center animate-slide-up stagger-3">
+            <Link 
+              href="/editor" 
+              className="text-gray-600 hover:text-black transition-colors text-sm"
+            >
+              Continue to previous session →
+            </Link>
+          </div>
+        )}
       </div>
     </main>
   );

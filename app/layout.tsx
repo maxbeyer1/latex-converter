@@ -1,8 +1,11 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
-import Navigation from "./components/Navigation";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ 
+  subsets: ["latin"],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+});
 
 export const metadata = {
   title: "LaTeX Converter",
@@ -16,8 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-gray-50`}>
-        <Navigation />
+      <body className={`${inter.className} bg-white text-black min-h-screen`}>
         {children}
       </body>
     </html>
