@@ -59,7 +59,11 @@ export const convertPdfToLatex = async (file: File): Promise<string> => {
     }
     
     const data = await response.json();
-    return data.latex || "";
+
+    // Remove ```latex from the start and ``` from the end and strip any whitespace
+    const latexContent = data.latex.replace(/```latex/g, "").replace(/```/g, "").trim();
+
+    return latexContent || "";
   } catch (error) {
     console.error("Error converting PDF:", error);
     throw error;
