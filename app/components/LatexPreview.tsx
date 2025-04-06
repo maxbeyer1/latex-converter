@@ -17,7 +17,7 @@ const LatexPreview: React.FC<LatexPreviewProps> = ({ content, isLoading = false 
         <pre className="whitespace-pre-wrap">{content}</pre>
       ) : (
         <p className="text-gray-400 text-center italic mt-20">
-          LaTeX content will appear here after conversion
+          LaTeX content will appear here after conversion.
         </p>
       )}
     </div>

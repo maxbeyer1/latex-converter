@@ -12,13 +12,14 @@ load_dotenv()
 
 # genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+prompt = os.getenv("PROMPT")
 
 app = FastAPI()
 
 # CORS for frontend access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:3001"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],   
     allow_headers=["Content-Type", "Authorization"],
@@ -50,8 +51,6 @@ async def upload_file(file: UploadFile = File(...)):
         path = pathlib.Path(file_path)
         
         model = "gemini-2.5-pro-preview-03-25"
-
-        prompt = "Extract the math content in LaTeX format."
         
         print("Calling Gemini with parameters: ", model, prompt)
         print("File path: ", path)

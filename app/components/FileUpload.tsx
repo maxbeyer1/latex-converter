@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
 interface FileUploadProps {
   onFileSelect: (file: File) => void;
@@ -14,23 +14,46 @@ const FileUpload: React.FC<FileUploadProps> = ({
   isLoading = false,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  const handleFile = (file: File) => {
+    if (accept.includes(file.type)) {
+      onFileSelect(file);
+    } else {
+      alert(`Please upload a ${accept} file`);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
-    if (file) {
-      if (accept.includes(file.type)) {
-        onFileSelect(file);
-      } else {
-        alert(`Please upload a ${accept} file`);
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-        }
-      }
-    }
+    if (file) handleFile(file);
   };
 
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const file = e.dataTransfer.files?.[0] || null;
+    if (file) handleFile(file);
+  }
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  }
+
   return (
-    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition-colors">
+    <div 
+      className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors 
+        ${isDragOver ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}
+        ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:border-blue-500'}
+      `}
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      onDragEnter={() => setIsDragOver(true)}
+      onDragLeave={() => setIsDragOver(false)}
+    >
       <input
         type="file"
         accept={accept}
