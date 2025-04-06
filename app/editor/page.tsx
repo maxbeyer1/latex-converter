@@ -128,11 +128,17 @@ $$E = mc^2$$
         e.preventDefault();
         console.log('Format document triggered');
       }
+      
+      // Go home with Ctrl+H
+      if (e.ctrlKey && e.key === 'h') {
+        e.preventDefault();
+        router.push('/');
+      }
     };
     
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [latexCode, debouncedRender, clearLatexContent, defaultLatex]);
+  }, [latexCode, debouncedRender, clearLatexContent, defaultLatex, router]);
 
   // Show full-screen loading on initial load
   if (isInitialLoad && isLoading) {
@@ -309,6 +315,10 @@ $$E = mc^2$$
               <div className="flex justify-between">
                 <span className="text-gray-600">New document</span>
                 <span className="font-mono bg-gray-100 px-2 py-0.5 rounded text-xs">Ctrl + N</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Go home</span>
+                <span className="font-mono bg-gray-100 px-2 py-0.5 rounded text-xs">Ctrl + H</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Toggle fullscreen</span>
