@@ -38,14 +38,14 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-start p-6 bg-gray-50">
-      <div className="w-full max-w-4xl">
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">LaTeX Converter</h1>
+    <main className="flex min-h-screen flex-col items-center justify-start p-6 bg-gray-50 pt-0">
+      <div className="w-full max-w-4xl mt-6">
+        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">PDF to LaTeX Converter</h1>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-1 gap-6 ">
           {/* Input Section */}
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4 text-gray-700">Upload PDF</h2>
+            <h2 className="text-xl font-semibold mb-4 text-center text-gray-700">Upload PDF</h2>
             
             <FileUpload 
               onFileSelect={handleFileSelect}
@@ -58,21 +58,23 @@ export default function Home() {
             )}
             
             {pdfFile && (
+            <div className="flex justify-center w-full">
               <button
                 onClick={handleConvert}
                 disabled={isLoading}
-                className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors disabled:bg-blue-300"
+                className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors disabled:bg-blue-300"
               >
                 {isLoading ? "Converting..." : "Convert to LaTeX"}
               </button>
-            )}
+            </div>
+          )}
           </div>
-          
-          {/* Output Preview Section */}
+          {/* Output Preview Section
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-4 text-gray-700">LaTeX Output</h2>
             <LatexPreview content={latexContent} isLoading={isLoading} />
           </div>
+          */}
         </div>
       </div>
     </main>
