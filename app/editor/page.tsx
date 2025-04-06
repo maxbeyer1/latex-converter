@@ -92,25 +92,47 @@ $$E = mc^2$$
   // State for keyboard shortcuts
   const [showShortcuts, setShowShortcuts] = useState<boolean>(false);
   
-  // Keyboard shortcut handler for Cmd+S to save (simulate)
+  // Keyboard shortcut handlers
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Toggle shortcuts panel with Cmd+/
-      if ((e.metaKey || e.ctrlKey) && e.key === '/') {
+      // Toggle shortcuts panel with Ctrl+/
+      if (e.ctrlKey && e.key === '/') {
         e.preventDefault();
         setShowShortcuts(prev => !prev);
       }
       
-      // Auto-compile with Cmd+Enter
-      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      // Auto-compile with Ctrl+Enter
+      if (e.ctrlKey && e.key === 'Enter') {
         e.preventDefault();
         debouncedRender(latexCode);
+      }
+      
+      // Toggle fullscreen editor mode with F11 (simulate)
+      if (e.key === 'F11') {
+        e.preventDefault();
+        // This would toggle fullscreen in a real implementation
+        console.log('Fullscreen toggle triggered');
+      }
+      
+      // New document with Ctrl+N
+      if (e.ctrlKey && e.key === 'n') {
+        e.preventDefault();
+        clearLatexContent();
+        setLatexCode(defaultLatex);
+        setIsLoading(true);
+        debouncedRender(defaultLatex);
+      }
+      
+      // Format document with Ctrl+Shift+F (simulate)
+      if (e.ctrlKey && e.shiftKey && e.key === 'f') {
+        e.preventDefault();
+        console.log('Format document triggered');
       }
     };
     
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [latexCode, debouncedRender]);
+  }, [latexCode, debouncedRender, clearLatexContent, defaultLatex]);
 
   // Show full-screen loading on initial load
   if (isInitialLoad && isLoading) {
@@ -209,7 +231,7 @@ $$E = mc^2$$
                 <h2 className="text-xs text-gray-500 uppercase tracking-wide font-medium">LaTeX Editor</h2>
               </div>
               <div className="text-xs text-gray-400">
-                ⌘+Enter to compile
+                Ctrl+Enter to compile
               </div>
             </div>
           </div>
@@ -278,11 +300,23 @@ $$E = mc^2$$
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-600">Compile document</span>
-                <span className="font-mono bg-gray-100 px-2 py-0.5 rounded text-xs">⌘ + Enter</span>
+                <span className="font-mono bg-gray-100 px-2 py-0.5 rounded text-xs">Ctrl + Enter</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Toggle shortcuts</span>
-                <span className="font-mono bg-gray-100 px-2 py-0.5 rounded text-xs">⌘ + /</span>
+                <span className="font-mono bg-gray-100 px-2 py-0.5 rounded text-xs">Ctrl + /</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">New document</span>
+                <span className="font-mono bg-gray-100 px-2 py-0.5 rounded text-xs">Ctrl + N</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Toggle fullscreen</span>
+                <span className="font-mono bg-gray-100 px-2 py-0.5 rounded text-xs">F11</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Format document</span>
+                <span className="font-mono bg-gray-100 px-2 py-0.5 rounded text-xs">Ctrl + Shift + F</span>
               </div>
             </div>
           </div>
