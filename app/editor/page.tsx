@@ -2,8 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import { renderLatexToPdf } from "../services/latexService";
-import { debounce } from "lodash"; // Assuming lodash is available or can be installed
+import { useAppStore } from "../services/appState";
+import { debounce } from "lodash";
 
 // Dynamically import components to prevent SSR issues
 const CodeEditor = dynamic(() => import("../components/CodeEditor"), {
@@ -15,15 +17,24 @@ const PdfPreview = dynamic(() => import("../components/PdfPreview"), {
 });
 
 export default function EditorPage() {
-  const [latexCode, setLatexCode] = useState<string>(`\\documentclass{article}
+  const router = useRouter();
+  // Get LaTeX content from global state
+  const storedLatexContent = useAppStore((state) => state.latexContent);
+  
+  // Default LaTeX content if none is provided
+  const defaultLatex = `\\documentclass{article}
 \\begin{document}
 \\section{Introduction}
 Hello, world! This is a simple LaTeX document.
 
 $$E = mc^2$$
 
-\\end{document}`);
-
+\\end{document}`;
+  
+  // Use stored content or default
+  const initialLatex = storedLatexContent || defaultLatex;
+  
+  const [latexCode, setLatexCode] = useState<string>(initialLatex);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

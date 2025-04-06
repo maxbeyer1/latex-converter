@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAppStore } from "../services/appState";
 
 export default function Navigation() {
   const pathname = usePathname();
+  const clearLatexContent = useAppStore((state) => state.clearLatexContent);
   
   return (
     <nav className="bg-white shadow-sm w-full">
@@ -23,7 +25,7 @@ export default function Navigation() {
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"
                 }`}
               >
-                Converter
+                PDF to LaTeX
               </Link>
               <Link 
                 href="/editor"
@@ -33,10 +35,20 @@ export default function Navigation() {
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"
                 }`}
               >
-                Editor
+                LaTeX Editor
               </Link>
             </div>
           </div>
+          {pathname === "/editor" && (
+            <div className="flex items-center">
+              <button 
+                onClick={() => clearLatexContent()}
+                className="text-sm text-gray-600 hover:text-gray-800"
+              >
+                Clear Editor
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </nav>
