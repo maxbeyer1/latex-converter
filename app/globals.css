@@ -95,6 +95,23 @@
   100% { transform: scale(1); }
 }
 
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes orbitPulse {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.8); opacity: 0.5; }
+}
+
+@keyframes orbitRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out forwards;
 }
@@ -117,6 +134,20 @@
 
 .animate-slide-fade {
   animation: slideFadeIn 0.3s var(--transition-ease) forwards;
+}
+
+.animate-gradient {
+  background: linear-gradient(270deg, #f3f4f6, #e5e7eb, #d1d5db, #e5e7eb, #f3f4f6);
+  background-size: 300% 100%;
+  animation: gradientShift 8s ease infinite;
+}
+
+.animate-orbit-pulse {
+  animation: orbitPulse 2s ease-in-out infinite;
+}
+
+.animate-orbit-rotate {
+  animation: orbitRotate 12s linear infinite;
 }
 
 /* Staggered animation delays */

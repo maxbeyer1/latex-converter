@@ -5,6 +5,18 @@ module.exports = {
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  safelist: [
+    'animate-gradient',
+    'animate-pulse-subtle',
+    'animate-fade-in',
+    'animate-slide-up',
+    'animate-slide-fade',
+    'animate-orbit-pulse',
+    'animate-orbit-rotate',
+    'stagger-1',
+    'stagger-2',
+    'stagger-3',
+  ],
   theme: {
     extend: {
       backgroundImage: {
