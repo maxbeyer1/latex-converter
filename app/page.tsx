@@ -23,7 +23,7 @@ export default function Home() {
 
   // Animation for the terminal-style typing effect
   useEffect(() => {
-    const fullText = "\\documentclass{article}\n\\begin{document}\n\\title{PDF To LaTeX Converter}\n\\author{\\texttt{powered by AI}}\n\\date{\\today}\n\\maketitle\n\\end{document}";
+    const fullText = "\\documentclass{article}\n\\begin{document}\n\\title{getLa.TeCH}\n\\author{\\text{powered by Google Gemini}}\n\\date{\\today}\n\\maketitle\n\\end{document}";
     let currentIndex = 0;
     
     if (!animationComplete) {
@@ -112,7 +112,7 @@ export default function Home() {
             <div className="flex flex-col h-full">
               <div className="mb-8">
                 <h1 className="font-mono text-4xl font-bold mb-2 border-b-2 border-black pb-2 inline-block">
-                  LaTeX<span className="text-gray-500">Converter</span>
+                  get<span className="text-gray-500">La.TeCH</span>
                 </h1>
                 <p className="font-mono text-sm text-gray-600 mt-2">
                   [<span className="text-blue-600">pdf</span>] → [<span className="text-green-600">tex</span>]

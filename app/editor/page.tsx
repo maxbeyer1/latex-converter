@@ -153,7 +153,7 @@ $$E = mc^2$$
           {/* Logo - absolutely positioned to left */}
           <div className="absolute left-6 top-0 h-full flex items-center">
             <Link href="/" className="text-black font-medium hover:text-gray-700 transition-colors">
-              LaTeX Converter
+              LaTeCH
             </Link>
           </div>
           

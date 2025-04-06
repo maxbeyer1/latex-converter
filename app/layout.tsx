@@ -8,7 +8,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "LaTeX Converter",
+  title: "La.TeCH",
   description: "Convert PDF documents to LaTeX format",
 };
 
