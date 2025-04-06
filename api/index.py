@@ -11,11 +11,20 @@ import pathlib
 import subprocess
 import tempfile
 
+# Claude Dependencies
+import asyncio
+import json
+
 load_dotenv()
 
 # genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 prompt = os.getenv("PROMPT")
+
+# Claude prompts
+structure_prompt = os.getenv("STRUCTURE_PROMPT")
+equation_prompt = os.getenv("EQUATION_PROMPT")
+validation_prompt = os.getenv("VALIDATION_PROMPT")
 
 app = FastAPI()
 
@@ -32,6 +41,55 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE"],   
     allow_headers=["Content-Type", "Authorization"],
 )
+
+# Claude helper functions BELOW
+# ------------------------------------------------
+
+# Identify block function
+async def extract_structure(file_path):
+    model = "gemini-2.5-pro-preview-03-25"
+    path = pathlib.Path(file_path)
+    response = client.models.generate_content(
+        model = model,
+        contents = [
+            types.Part.from_bytes(
+                data=path.read_bytes(),
+                mime_type="application/pdf",
+            ),
+            structure_prompt
+        ]
+    )
+    return json.loads(response.text)
+
+# Process equation block with Gemini instances and voting philosophy
+async def process_equation_block(block_data, file_path):
+    model = "gemini-2.5-pro-preview-03-25"
+    path = pathlib.Path(file_path)
+
+    # Create 3 parallel equation conversion tasks
+    conversion_tasks = []
+    for i in range(3):
+        conversion_tasks.append(
+            client.models.generate_content(
+                model = model,
+                contents = [
+                    types.Part.from_bytes(
+                        data=path.read_bytes(),
+                        mime_type = "application/pdf",
+                    ),
+                    f"{equation_prompt}\n\nBlock info: {json.dumps(block_data)}"
+                ]
+            )
+        )
+    
+    # Run conversions in parallel and get results
+    equation_results = await asyncio.gather(*conversion_tasks)
+
+    # Weighted Voting
+    return weighted_vote([result.text for result in equation_results])
+
+
+# ------------------------------------------------
 
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
