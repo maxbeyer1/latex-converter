@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { renderLatexToPdf } from "../services/latexService";
 import { useAppStore } from "../services/appState";
 import { debounce } from "lodash";
+import LoadingSpinner from "../components/LoadingSpinner";
+import Link from "next/link";
 
 // Dynamically import components to prevent SSR issues
 const CodeEditor = dynamic(() => import("../components/CodeEditor"), {
@@ -20,6 +22,7 @@ export default function EditorPage() {
   const router = useRouter();
   // Get LaTeX content from global state
   const storedLatexContent = useAppStore((state) => state.latexContent);
+  const clearLatexContent = useAppStore((state) => state.clearLatexContent);
   
   // Default LaTeX content if none is provided
   const defaultLatex = `\\documentclass{article}
@@ -36,7 +39,8 @@ $$E = mc^2$$
   
   const [latexCode, setLatexCode] = useState<string>(initialLatex);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   // Cleanup function for Blob URLs
@@ -68,6 +72,7 @@ $$E = mc^2$$
         console.error("Error rendering PDF:", err);
       } finally {
         setIsLoading(false);
+        setIsInitialLoad(false);
       }
     }, 1000), // 1 second delay
     []
@@ -84,27 +89,56 @@ $$E = mc^2$$
     debouncedRender(latexCode);
   }, [latexCode, debouncedRender]);
 
+  // Show full-screen loading on initial load
+  if (isInitialLoad && isLoading) {
+    return <LoadingSpinner size="lg" text="Preparing your LaTeX document..." fullScreen={true} />;
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-start p-6 bg-gray-50 pt-0">
-      <div className="w-full max-w-6xl mt-6">
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">LaTeX Editor</h1>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Editor Section */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4 text-gray-700">Editor</h2>
-            <div className="h-[70vh] border border-gray-200 rounded overflow-hidden">
-              <CodeEditor
-                value={latexCode}
-                onChange={handleCodeChange}
-              />
-            </div>
+    <main className="min-h-screen flex flex-col">
+      {/* Header */}
+      <header className="border-b border-gray-100 py-4">
+        <div className="container-center flex justify-between items-center">
+          <Link href="/" className="text-black hover:text-gray-700 transition-colors">
+            <span className="text-xl font-bold">LaTeX</span>
+          </Link>
+          <div className="flex items-center space-x-4">
+            <button 
+              onClick={() => clearLatexContent()}
+              className="text-sm text-gray-500 hover:text-black transition-colors"
+            >
+              New Document
+            </button>
           </div>
-          
-          {/* Preview Section */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4 text-gray-700">PDF Preview</h2>
-            <div className="h-[70vh]">
+        </div>
+      </header>
+      
+      {/* Editor and Preview */}
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 border-gray-100">
+        <div className="animate-fade-in flex flex-col h-[calc(100vh-72px)]">
+          <div className="border-b border-gray-100 px-6 py-3 flex items-center justify-between">
+            <h2 className="font-medium">Editor</h2>
+          </div>
+          <div className="flex-1 overflow-hidden">
+            <CodeEditor
+              value={latexCode}
+              onChange={handleCodeChange}
+            />
+          </div>
+        </div>
+        
+        <div className="animate-fade-in lg:border-l border-gray-100 flex flex-col h-[calc(100vh-72px)]">
+          <div className="border-b border-gray-100 px-6 py-3 flex items-center justify-between">
+            <h2 className="font-medium">PDF Preview</h2>
+            {isLoading && (
+              <div className="flex items-center">
+                <LoadingSpinner size="sm" />
+                <span className="ml-2 text-xs text-gray-500">Rendering...</span>
+              </div>
+            )}
+          </div>
+          <div className="flex-1 p-4 bg-gray-50">
+            <div className="h-full shadow-sm">
               <PdfPreview 
                 pdfUrl={pdfUrl} 
                 isLoading={isLoading} 

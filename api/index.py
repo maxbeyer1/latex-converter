@@ -104,7 +104,7 @@ async def export_pdf(request: Request):
                 ["pdflatex", "-output-directory", tmpdir, tex_path],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                timeout=100
+                timeout=60
             )
 
             print(f"Result: {result}")

@@ -15,18 +15,25 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange }) => {
   }, [onChange]);
 
   return (
-    <CodeMirror
-      value={value}
-      height="100%"
-      extensions={[langs.stex()]}
-      onChange={handleChange}
-      theme="dark"
-      basicSetup={{
-        lineNumbers: true,
-        foldGutter: true,
-        highlightActiveLine: true,
-      }}
-    />
+    <div className="h-full transition-all">
+      <CodeMirror
+        value={value}
+        height="100%"
+        extensions={[langs.stex()]}
+        onChange={handleChange}
+        theme="light"
+        basicSetup={{
+          lineNumbers: true,
+          foldGutter: true,
+          highlightActiveLine: true,
+          highlightSelectionMatches: true,
+          autocompletion: true,
+          indentOnInput: true,
+          completionKeymap: true,
+        }}
+        style={{ fontSize: '14px' }}
+      />
+    </div>
   );
 };
 

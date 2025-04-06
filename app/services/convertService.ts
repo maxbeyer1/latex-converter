@@ -43,7 +43,9 @@ Here is a sample equation:
 //   });
 // };
 
-// Real implementation (uncomment and use when backend is ready)
+/**
+  * Convert PDF file to LaTeX format using the backend API 
+ */
 export const convertPdfToLatex = async (file: File): Promise<string> => {
   try {    
     const formData = new FormData();
