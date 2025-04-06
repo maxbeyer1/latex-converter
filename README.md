@@ -8,7 +8,7 @@
 ## 📚 About the Project
 Tired of submitting messy scans or spending hours formatting math in LaTeX? We were too. That's why we built **getLa.TeCH** — an intelligent note-to-LaTeX converter tailored for students, researchers, and educators.
 
-With a drag-and-drop interface and real-time rendering, getLa.TeCH simplifies the workflow from raw handwritten or typed math content to a clean LaTeX document. Whether you're preparing problem sets, study guides, or research notes, getLa.TeCH helps you save time and stay organized.
+With a drag-and-drop interface, real-time rendering, and an interactive editor, getLa.TeCH simplifies the workflow from raw handwritten or typed math content to a clean LaTeX document. Whether you're preparing problem sets, study guides, or research notes, getLa.TeCH helps you save time and stay organized.
 
 ### 🌟 Features
 - 🖼️ Upload handwritten or typed notes (PDF/image)
