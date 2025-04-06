@@ -38,9 +38,9 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-6 bg-gray-50">
-      <div className="w-full max-w-4xl">
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">LaTeX Converter</h1>
+    <main className="flex min-h-screen flex-col items-center justify-start p-6 bg-gray-50 pt-0">
+      <div className="w-full max-w-4xl mt-6">
+        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">PDF to LaTeX Converter</h1>
         
         <div className="grid grid-cols-1 lg:grid-cols-1 gap-6 ">
           {/* Input Section */}
