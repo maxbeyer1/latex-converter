@@ -188,7 +188,7 @@ export default function Home() {
                   <span>01</span>
                 </div>
                 <h3 className="font-mono text-sm uppercase tracking-wider mb-2">Accurate Conversion</h3>
-                <p className="font-mono text-xs text-gray-600">
+                <p className="font-mono text-xs text-gray-600 break-words overflow-hidden">
                   {'>> preserve_document_structure()'}
                 </p>
               </div>
@@ -198,7 +198,7 @@ export default function Home() {
                   <span>02</span>
                 </div>
                 <h3 className="font-mono text-sm uppercase tracking-wider mb-2">Interactive Editor</h3>
-                <p className="font-mono text-xs text-gray-600">
+                <p className="font-mono text-xs text-gray-600 break-words overflow-hidden">
                   {'>> edit_with_syntax_highlight()'}
                 </p>
               </div>
@@ -208,7 +208,7 @@ export default function Home() {
                   <span>03</span>
                 </div>
                 <h3 className="font-mono text-sm uppercase tracking-wider mb-2">Live Preview</h3>
-                <p className="font-mono text-xs text-gray-600">
+                <p className="font-mono text-xs text-gray-600 break-words overflow-hidden">
                   {'>> render_in_real_time()'}
                 </p>
               </div>
