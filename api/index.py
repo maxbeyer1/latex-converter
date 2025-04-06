@@ -1,12 +1,15 @@
-from fastapi.responses import JSONResponse
-from fastapi import FastAPI, UploadFile, File
+from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+from io import BytesIO
 import os
 import pathlib
+import subprocess
+import tempfile
 
 load_dotenv()
 
@@ -77,3 +80,49 @@ async def upload_file(file: UploadFile = File(...)):
             status_code=500,
             content={"error": str(e)}
         )
+
+@app.post("/export-pdf")
+async def export_pdf(request: Request):
+    try:
+        body = await request.json()
+        latex_code = body.get("latex")
+
+        if not latex_code:
+            return JSONResponse(status_code=400, content={"error":"No LaTeX content provided."})
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tex_path = os.path.join(tmpdir, "document.tex")
+            pdf_path = os.path.join(tmpdir, "document.pdf")
+
+            with open(tex_path, "w") as f:
+                f.write(latex_code)
+
+            result = subprocess.run(
+                ["pdflatex", "-output-directory", tmpdir, tex_path],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=10
+            )
+
+            print(f"Result: {result}")
+
+            if not os.path.exists(pdf_path):
+                return JSONResponse(
+                    status_code=500,
+                    content={"error": "PDF generation failed.", "log": result.stderr.decode()}
+                )
+            
+            # load pdf file into memory before leaving 'with' block
+            with open(pdf_path, "rb") as pdf_file:
+                pdf_bytes = BytesIO(pdf_file.read())
+        
+        # stream pdf file to client after tempdir is gone
+        return StreamingResponse(
+            pdf_bytes,
+            media_type="application/pdf",
+            headers={"Content-Disposition": "attachment; filename=converted.pdf"}
+        )
+    
+    except Exception as e:
+        print(f"PDF generation error: {e}")
+        return JSONResponse(status_code=500, content={"error": str(e)})
