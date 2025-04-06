@@ -156,7 +156,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
             {/* Helpful info */}
             <div className="mt-16 text-xs text-gray-500 text-center p-4 animate-gradient rounded-lg">
               <p>This may take up to 30 seconds for complex documents.</p>
-              <p className="mt-1">We're using advanced AI to ensure the best conversion possible.</p>
+              <p className="mt-1">We are using advanced AI to ensure the best conversion possible.</p>
             </div>
           </div>
         </div>

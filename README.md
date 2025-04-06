@@ -19,12 +19,43 @@ With a drag-and-drop interface, real-time rendering, and an interactive editor, 
 
 ---
 
+## 💻 Installation
+### Prerequisites
+- Python
+- Node.js
+- Google Generative AI API key, with billing enabled
+- pdflatex installed on your system
+    - For Windows, install MikTeX using Chocolatey or download from the official site
+    - For Mac, install MacTeX using Homebrew or download from the official site
+        - Do NOT use BasicTeX, it does not include many packages that our app expects
+    - For Linux, install TeX Live using your package manager
+
+### Setup
+
+1. Create a virtual environment and activate it:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+   ```
+
+2. Install frontend dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Run the dev server (automatically installs backend dependencies):
+   ```bash
+   npm run dev
+   ```
+   This will start both the frontend and backend servers with hot reloading.
+
 ## 🛠️ Built With
 ### Frontend
 - [Next.js](https://nextjs.org/) – React framework for SSR and frontend routing
 - [Tailwind CSS](https://tailwindcss.com/) – Utility-first CSS styling
 - [TypeScript](https://www.typescriptlang.org/) – Static typing for JS
 - [React](https://reactjs.org/) – Component-based UI library
+- [CodeMirror](https://codemirror.net/) – LaTeX code editor with syntax highlighting
 
 ### Backend
 - [FastAPI](https://fastapi.tiangolo.com/) – Python web framework for API endpoints
