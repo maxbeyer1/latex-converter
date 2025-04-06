@@ -22,7 +22,7 @@ app = FastAPI()
 # CORS for frontend access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000, http://localhost:3002"],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:3002"], 
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],   
     allow_headers=["Content-Type", "Authorization"],
@@ -104,7 +104,7 @@ async def export_pdf(request: Request):
                 ["pdflatex", "-output-directory", tmpdir, tex_path],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                timeout=10
+                timeout=100
             )
 
             print(f"Result: {result}")
