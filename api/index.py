@@ -63,7 +63,16 @@ async def extract_structure(file_path):
     
     # Try to parse the JSON response, with fallback if it fails
     try:
-        return json.loads(response.text)
+        # Check if response text starts with a code block marker
+        if response.text.strip().startswith("```json"):
+            # Extract JSON from markdown code block
+            json_text = response.text.split("```json", 1)[1].split("```", 1)[0].strip()
+            print("Extracted JSON from code block")
+        else:
+            json_text = response.text
+        
+        parsed_data = json.loads(json_text)
+        return parsed_data
     except json.JSONDecodeError:
         print(f"Failed to parse JSON from response: {response.text[:200]}...")
         # Return a default structure instead of crashing
