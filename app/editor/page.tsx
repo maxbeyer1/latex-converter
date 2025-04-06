@@ -241,7 +241,7 @@ $$E = mc^2$$
               </div>
             </div>
           </div>
-          <div className="flex-1 overflow-hidden pt-10">
+          <div className="flex-1 overflow-auto pt-10">
             <CodeEditor
               value={latexCode}
               onChange={handleCodeChange}

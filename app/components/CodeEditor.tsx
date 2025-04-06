@@ -33,7 +33,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange }) => {
   ];
 
   return (
-    <div className="h-full transition-all">
+    <div className="h-full transition-all overflow-auto">
       <CodeMirror
         value={value}
         height="100%"
@@ -52,7 +52,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange }) => {
           indentOnInput: true,
           completionKeymap: true,
         }}
-        style={{ fontSize: '14px' }}
+        style={{ fontSize: '14px', overflow: 'auto' }}
         onCreateEditor={(view) => {
           editorRef.current = view;
         }}
