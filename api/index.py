@@ -101,16 +101,66 @@ async def process_equation_block(block_data, file_path):
             )
         )
     
-    # Run conversions in parallel and get results
-    equation_results = await asyncio.gather(*conversion_tasks)
+    try:
+        # Run conversions in parallel and get results
+        equation_results = await asyncio.gather(*conversion_tasks)
+        
+        # Extract text from each response object BEFORE passing to weighted_vote
+        text_results = []
+        for result in equation_results:
+            try:
+                if hasattr(result, 'text'):
+                    text_results.append(result.text)
+                else:
+                    print(f"Warning: Response object does not have 'text' attribute: {type(result)}")
+                    text_results.append(str(result))
+            except Exception as e:
+                print(f"Error extracting text from response: {str(e)}")
+                continue
+        
+        if not text_results:
+            print("Warning: No valid text results extracted from responses")
+            return "No valid equation conversion results"
+            
+        # Weighted Voting with properly extracted text strings
+        return weighted_vote(text_results)
+    except Exception as e:
+        print(f"Error in process_equation_block: {str(e)}")
+        return f"Error processing equation: {str(e)}"
 
-    # Weighted Voting
-    return weighted_vote([result.text for result in equation_results])
-
-# Weighted Vote Logic
+# Weighted vote feature
 def weighted_vote(results):
-    # Just picks highest value, voting logic must be improved
-    return max(set(results), key=results.count)
+    try:
+        # Defensive check to ensure we have results to process
+        if not results:
+            print("Warning: No results provided to weighted_vote")
+            return ""
+            
+        # Count occurrences of each result
+        result_counts = {}
+        for result in results:
+            # Ensure the key is always a string (hashable)
+            hashable_key = str(result) if result is not None else "None"
+            result_counts[hashable_key] = result_counts.get(hashable_key, 0) + 1
+
+        if not result_counts:
+            print("Warning: No valid results to count")
+            return ""
+            
+        # Find the most common key
+        most_common_key = max(result_counts.items(), key=lambda x: x[1])[0]
+        
+        # Return the original result that matches the most common key
+        for result in results:
+            if str(result) == most_common_key:
+                return result
+            
+        # Fallback to the key itself if no matching original result found
+        return most_common_key
+    except Exception as e:
+        print(f"[DEBUG] Error in weighted_vote: {str(e)}")
+        # Fallback to first result if voting fails
+        return results[0] if results else ""
 
 # LaTeX Syntax Corrector
 async def validate_latex(latex_content):
