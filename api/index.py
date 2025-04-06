@@ -36,6 +36,9 @@ async def upload_file(file: UploadFile = File(...)):
             return {"message": "No upload file sent"}
         else:
             print("Upload file received: ", file.filename)
+            
+        # Create the uploads directory if it doesn't exist
+        os.makedirs("./api/uploads", exist_ok=True)
         
         # Save the uploaded file
         file_path = f"./api/uploads/{file.filename}"
