@@ -37,11 +37,24 @@ const PdfPreview: React.FC<PdfPreviewProps> = ({ pdfUrl, isLoading, error }) => 
           </div>
         </div>
       ) : pdfUrl ? (
-        <iframe 
-          src={pdfUrl} 
-          className="w-full h-full border-0 animate-fade-in"
-          title="PDF Preview"
-        />
+        <div className="relative w-full h-full">
+          <div className="absolute top-4 right-4 space-x-2 z-10 opacity-50 hover:opacity-100 transition-opacity duration-200">
+            <button 
+              className="w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
+              onClick={() => window.open(pdfUrl, '_blank')}
+              title="Open in new tab"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </button>
+          </div>
+          <iframe 
+            src={pdfUrl} 
+            className="w-full h-full border-0 animate-fade-in rounded-lg"
+            title="PDF Preview"
+          />
+        </div>
       ) : (
         <div className="flex items-center justify-center h-full">
           <div className="text-center max-w-sm">

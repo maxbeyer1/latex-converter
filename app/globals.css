@@ -7,11 +7,25 @@
   --background-rgb: 255, 255, 255;
   --accent-rgb: 0, 0, 0;
   --transition-ease: cubic-bezier(0.65, 0, 0.35, 1);
+  --transition-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 @layer base {
   body {
     @apply bg-white text-black antialiased;
+  }
+  
+  /* Better scrollbars for Overleaf-like experience */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-200 rounded-full hover:bg-gray-300 transition-colors;
   }
 }
 
@@ -35,6 +49,11 @@
   .container-center {
     @apply w-full max-w-4xl mx-auto px-4;
   }
+  
+  /* Focus mode - for cleaner Overleaf-like experience */
+  .focus-visible {
+    @apply outline-none ring-2 ring-black/10 ring-offset-2;
+  }
 }
 
 /* Animations */
@@ -48,6 +67,34 @@
   to { transform: translateY(0); opacity: 1; }
 }
 
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes scale {
+  0% { transform: scale(0.95); }
+  70% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+@keyframes slideFadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(8px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0% { transform: scale(0.95); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out forwards;
 }
@@ -56,7 +103,82 @@
   animation: slideUp 0.5s var(--transition-ease) forwards;
 }
 
+.animate-scale {
+  animation: scale 0.4s var(--transition-bounce) forwards;
+}
+
+.animate-pulse-subtle {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-bounce-in {
+  animation: bounce 0.3s var(--transition-bounce) forwards;
+}
+
+.animate-slide-fade {
+  animation: slideFadeIn 0.3s var(--transition-ease) forwards;
+}
+
 /* Staggered animation delays */
 .stagger-1 { animation-delay: 0.1s; }
 .stagger-2 { animation-delay: 0.2s; }
 .stagger-3 { animation-delay: 0.3s; }
+
+/* Hover effect classes for microinteractions */
+.hover-lift {
+  @apply transition-transform duration-200;
+}
+
+.hover-lift:hover {
+  @apply transform -translate-y-1;
+}
+
+.hover-scale {
+  @apply transition-transform duration-200; 
+}
+
+.hover-scale:hover {
+  @apply transform scale-105;
+}
+
+/* Tooltip styled after Overleaf */
+.tooltip {
+  @apply relative inline-block;
+}
+
+.tooltip::after {
+  content: attr(data-tip);
+  @apply absolute px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 pointer-events-none transition-all duration-200;
+  @apply bg-black text-white font-normal shadow-sm;
+  top: 115%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  z-index: 100;
+}
+
+/* Handle right-edge tooltips */
+.tooltip.tooltip-right::after {
+  left: auto;
+  right: 0;
+  transform: translateX(0) translateY(-10px);
+}
+
+.tooltip.tooltip-right:hover::after {
+  transform: translateX(0) translateY(0);
+}
+
+/* Handle left-edge tooltips */
+.tooltip.tooltip-left::after {
+  left: 0;
+  right: auto;
+  transform: translateX(0) translateY(-10px);
+}
+
+.tooltip.tooltip-left:hover::after {
+  transform: translateX(0) translateY(0);
+}
+
+.tooltip:hover::after {
+  @apply opacity-100;
+  transform: translateX(-50%) translateY(0);
+}
