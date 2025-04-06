@@ -45,6 +45,7 @@ app.add_middleware(
 # Claude helper functions BELOW
 # ------------------------------------------------
 
+# ***ERROR FIXED BELOW***
 # Identify block function
 async def extract_structure(file_path):
     model = "gemini-2.5-pro-preview-03-25"
@@ -59,7 +60,16 @@ async def extract_structure(file_path):
             structure_prompt
         ]
     )
-    return json.loads(response.text)
+    
+    # Try to parse the JSON response, with fallback if it fails
+    try:
+        return json.loads(response.text)
+    except json.JSONDecodeError:
+        print(f"Failed to parse JSON from response: {response.text[:200]}...")
+        # Return a default structure instead of crashing
+        return {"blocks": [
+            {"id": "block1", "type": "text", "page": 1, "region": "full", "summary": "Document content"}
+        ]}
 
 # Process equation block with Gemini instances and voting philosophy
 async def process_equation_block(block_data, file_path):
@@ -88,6 +98,19 @@ async def process_equation_block(block_data, file_path):
     # Weighted Voting
     return weighted_vote([result.text for result in equation_results])
 
+# Weighted Vote Logic
+def weighted_vote(results):
+    # Just picks highest value, voting logic must be improved
+    return max(set(results), key=results.count)
+
+# LaTeX Syntax Corrector
+async def validate_latex(latex_content):
+    model = "gemini-2.5-pro-preview-03-25"
+    response = client.models.generate_content(
+        model=model,
+        contents=[validation_prompt, latex_content]
+    )
+    return response.text
 
 # ------------------------------------------------
 
@@ -105,39 +128,57 @@ async def upload_file(file: UploadFile = File(...)):
         
         # Save the uploaded file
         file_path = f"./api/uploads/{file.filename}"
-        
         print("File path: ", file_path)
-        
         contents = await file.read()
-        
         print("File contents successfully read")
-                
         with open(file_path, "wb") as f:
             f.write(contents)
-            
         print("File saved successfully")
         
-        path = pathlib.Path(file_path)
-        
-        model = "gemini-2.5-pro-preview-03-25"
-        
-        print("Calling Gemini with parameters: ", model, prompt)
-        print("File path: ", path)
+        # CLAUDE SECTION BELOW
+        # --------------------------------------------------------
 
-        # Call the model with the file
-        response = client.models.generate_content(
-            model=model,
-            contents=[
-                types.Part.from_bytes(
-                    data=path.read_bytes(),
-                    mime_type="application/pdf",
-                ),
-                prompt])
-        
-        print("Response: ", response.text)
+        # Get document structure
+        structure = await extract_structure(file_path)
+        print(f"Document structure extracted: {len(structure['blocks'])} blocks found")
 
-        return JSONResponse(content={"latex": response.text})
-    
+        # Process each block appropriately
+        processed_blocks = []
+        for block in structure['blocks']:
+            if block['type'] in ['equation', 'complex_equation', 'simple_equation']:
+                # Use multi-model voting for equations
+                latex = await process_equation_block(block, file_path)
+            else:
+                # Use single model for text blocks
+                model = "gemini-2.5-pro-preview-03-25"
+                path = pathlib.Path(file_path)
+                response = client.models.generate_content(
+                    model = model,
+                    contents=[
+                        types.Part.from_bytes(
+                            data=path.read_bytes(),
+                            mime_type = "application/pdf",
+                        ),
+                        f"{prompt}\n\nBlock info: {json.dumps(block)}"
+                    ]
+                )
+                latex = response.text
+            
+            processed_blocks.append({
+                'id': block['id'],
+                'type': block['type'],
+                'content': latex
+            })
+
+        # Assemble document
+        complete_latex = "\n\n".join([block['content'] for block in processed_blocks])
+
+        # Final validation
+        validated_latex = await validate_latex(complete_latex)
+
+        print("LaTeX conversion complete")
+        return JSONResponse(content={"latex": validated_latex})
+        # --------------------------------------------------------
     except Exception as e:
         # Log the specific error
         print(f"Error processing upload: {str(e)}")
