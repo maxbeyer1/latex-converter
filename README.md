@@ -1,5 +1,7 @@
 # 📄 getLa.TeCH
 
+This project was initially created for [WildHacks 2025]([url](https://www.wildhacks.net/)), an MLH hackathon at Northwestern University.
+
 ## 🚀 Elevator Pitch
 **getLa.TeCH** is a web app that takes the chaos out of handwritten or typed math homework and turns it into beautiful, editable, and exportable LaTeX documents. Upload your notes, get clean LaTeX, preview in real-time, edit on the fly, and download polished PDFs — all in one place.
 
